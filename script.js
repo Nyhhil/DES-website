@@ -18,19 +18,30 @@ document
         },
       })
       .then(function (response) {
-        let text = response.data.ParsedResults[0].ParsedText;
-        document.getElementById("result").innerText = text;
-        fetch(
-          `https://api.mymemory.translated.net/get?q=${text}&langpair=en|es&key=d9c97c6daf2d512df57d`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            let Rdata = data.responseData.translatedText;
-            document.getElementById("result_").innerText = Rdata;
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
+        console.log(response.data);
+        if (
+          response.data &&
+          response.data.ParsedResults &&
+          response.data.ParsedResults.length > 0
+        ) {
+          let text = response.data.ParsedResults[0].ParsedText;
+          document.getElementById("result").innerText = text;
+          fetch(
+            `https://api.mymemory.translated.net/get?q=${text}&langpair=en|es&key=d9c97c6daf2d512df57d`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              let Rdata = data.responseData.translatedText;
+              document.getElementById("result_").innerText = Rdata;
+            })
+            .catch((error) => {
+              console.error("Error al obtener los datos:", error);
+            });
+        } else {
+          console.error("No se encontraron resultados en la respuesta de OCR.");
+          document.getElementById("result").innerText =
+            "No se encontraron resultados.";
+        }
       })
       .catch(function (error) {
         console.error("Error:", error);
